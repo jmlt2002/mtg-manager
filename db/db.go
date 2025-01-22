@@ -10,7 +10,6 @@ import (
 
 var Database *sql.DB
 
-// InitDB: creates and initializes the database
 func InitDB(filepath string) error {
 	var err error
 	Database, err = sql.Open("sqlite3", filepath)
@@ -25,14 +24,13 @@ func InitDB(filepath string) error {
 	return nil
 }
 
-// createTables: creates initial tables
 func createInitialTables() error {
 	createUsersTable := `
 	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		username TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
-		
+		date_of_creation TEXT NOT NULL
 	);`
 
 	createCardsTable := `
@@ -59,23 +57,7 @@ func createInitialTables() error {
 	return nil
 }
 
-// CreateUserLibrary: creates private library for a user
-func CreateUserLibrary(uid int) error {
-	createUserLibraryTable := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS lib%d (
-		card_id INTEGER PRIMARY KEY NOT NULL,
-		FOREIGN KEY (card_id) REFERENCES cards(id)
-	);`, uid)
-
-	if _, err := Database.Exec(createUserLibraryTable); err != nil {
-		return fmt.Errorf("failed to create library for user %v", uid)
-	}
-
-	log.Printf("User %d's library created succesfully.", uid)
-	return nil
-}
-
-// destroyDB: destroys the database (to be used only for testing purposes)
+// (to be used only for testing purposes, theoretically this is a server so should be running all the time)
 func DestroyDB() error {
 	err := Database.Close()
 	if err != nil {

@@ -18,7 +18,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		fmt.Fprintln(w, "get")
 	case http.MethodDelete:
-		fmt.Fprintln(w, "delete")
+		deleteUser(w, r)
 	default:
 		fmt.Fprintln(w, "Invalid request method")
 	}
@@ -32,6 +32,19 @@ func postUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.CreateNewUser(user); err != nil {
+		http.Error(w, "An error occurred while processing your request. Please try again later.", http.StatusInternalServerError)
+		return
+	}
+}
+
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	var u db.User
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+		return
+	}
+
+	if err := db.DeleteUser(u); err != nil {
 		http.Error(w, "An error occurred while processing your request. Please try again later.", http.StatusInternalServerError)
 		return
 	}
