@@ -29,7 +29,7 @@ func createInitialTables() error {
 	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		username TEXT NOT NULL UNIQUE,
-		password TEXT NOT NULL
+		password TEXT NOT NULL,
 		date_of_creation TEXT NOT NULL
 	);`
 
@@ -39,11 +39,9 @@ func createInitialTables() error {
 		name TEXT NOT NULL,
 		type TEXT,
 		mana_cost TEXT,
-		rarity TEXT,
 		colors TEXT,
 		description TEXT,
-		user_id INTEGER,
-		FOREIGN KEY (user_id) REFERENCES users(id)
+		custom_card INTEGER
 	);`
 
 	if _, err := Database.Exec(createUsersTable); err != nil {

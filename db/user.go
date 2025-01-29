@@ -62,7 +62,19 @@ func CreateNewUser(u User) error {
 }
 
 func DeleteUser(u User) error {
-	stmt, err := Database.Prepare(`DELETE FROM users WHERE username = ? AND password = ?`)
+	tx, err := Database.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			log.Printf("Transaction rolled back due to error: %v", err)
+		}
+	}()
+
+	stmt, err := tx.Prepare(`DELETE FROM users WHERE username = ? AND password = ?`)
 	if err != nil {
 		return fmt.Errorf("failed to prepare statement: %w", err)
 	}
@@ -79,6 +91,16 @@ func DeleteUser(u User) error {
 	}
 	if rowsAffected == 0 {
 		return fmt.Errorf("no user found with the given username and password")
+	}
+
+	deleteUserLibraryTable := fmt.Sprintf(`DROP TABLE IF EXISTS lib%v;`, u.Username)
+	if _, err := tx.Exec(deleteUserLibraryTable); err != nil {
+		return fmt.Errorf("failed to delete user's library table: %w", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
 	return nil

@@ -18,7 +18,8 @@ func main() {
 	defer db.DestroyDB()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", handlers.UserHandler)
+	r.HandleFunc("/users", handlers.UserHandler)
+	r.HandleFunc("/cards", handlers.CardHandler)
 	// r.HandleFunc("/products/{key}", ProductHandler)
 	// r.HandleFunc("/articles", ArticlesHandler)
 	http.Handle("/", r)
