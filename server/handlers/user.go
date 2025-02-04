@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"mtg-manager/db"
+	"mtg-manager/server/db"
 )
 
+// controls user's details
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	switch method {

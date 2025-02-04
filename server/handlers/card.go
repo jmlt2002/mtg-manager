@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"mtg-manager/db"
+	"mtg-manager/server/db"
 )
 
+// controls the attributes of a certain card
 func CardHandler(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	switch method {

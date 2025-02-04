@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"mtg-manager/db"
-	"mtg-manager/handlers"
+	"mtg-manager/server/db"
+	"mtg-manager/server/handlers"
 
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
@@ -18,8 +18,9 @@ func main() {
 	defer db.DestroyDB()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/users", handlers.UserHandler)
-	r.HandleFunc("/cards", handlers.CardHandler)
+	r.HandleFunc("/users/{uid}", handlers.UserHandler)
+	r.HandleFunc("/cards/{cid}", handlers.CardHandler)
+	r.HandleFunc("/library/{uid}", handlers.LibraryHandler)
 	// r.HandleFunc("/products/{key}", ProductHandler)
 	// r.HandleFunc("/articles", ArticlesHandler)
 	http.Handle("/", r)
