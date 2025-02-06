@@ -6,6 +6,8 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	"mtg-manager/server/utils"
 )
 
 type User struct {
@@ -32,8 +34,13 @@ func CreateNewUser(u User) error {
 	}
 	defer stmt.Close()
 
+	hashed_password, err := utils.HashPassword(u.Password)
+	if err != nil {
+		return fmt.Errorf("failed to hash password: %w", err)
+	}
+
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	result, err := stmt.Exec(u.Username, u.Password, currentTime)
+	result, err := stmt.Exec(u.Username, hashed_password, currentTime)
 	if err != nil {
 		return fmt.Errorf("failed to execute user insertion: %w", err)
 	}

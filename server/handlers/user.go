@@ -13,7 +13,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	switch method {
 	case http.MethodPost:
-		postUser(w, r)
+		createUser(w, r)
 	case http.MethodPut:
 		fmt.Fprintln(w, "put")
 	case http.MethodGet:
@@ -25,7 +25,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func postUser(w http.ResponseWriter, r *http.Request) {
+func createUser(w http.ResponseWriter, r *http.Request) {
 	var user db.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
