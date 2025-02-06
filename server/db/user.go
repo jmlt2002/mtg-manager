@@ -105,3 +105,19 @@ func DeleteUser(u User) error {
 
 	return nil
 }
+
+func GetUserByUsername(uname string) (User, error) {
+	stmt, err := Database.Prepare(`SELECT username, password, date_of_creation FROM users WHERE username = ?`)
+	if err != nil {
+		return User{}, fmt.Errorf("failed to prepare statement: %w", err)
+	}
+	defer stmt.Close()
+
+	var u User
+	err = stmt.QueryRow(uname).Scan(&u.Username, &u.Password)
+	if err != nil {
+		return User{}, fmt.Errorf("User not found")
+	}
+
+	return u, nil
+}
