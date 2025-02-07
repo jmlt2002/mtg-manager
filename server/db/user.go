@@ -68,7 +68,7 @@ func CreateNewUser(u User) error {
 	return nil
 }
 
-func DeleteUser(u User) error {
+func DeleteUser(uname string) error {
 	tx, err := Database.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
@@ -81,13 +81,13 @@ func DeleteUser(u User) error {
 		}
 	}()
 
-	stmt, err := tx.Prepare(`DELETE FROM users WHERE username = ? AND password = ?`)
+	stmt, err := tx.Prepare(`DELETE FROM users WHERE username = ?`)
 	if err != nil {
 		return fmt.Errorf("failed to prepare statement: %w", err)
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(u.Username, u.Password)
+	result, err := stmt.Exec(uname)
 	if err != nil {
 		return fmt.Errorf("failed to execute statement: %w", err)
 	}
@@ -100,7 +100,7 @@ func DeleteUser(u User) error {
 		return fmt.Errorf("no user found with the given username and password")
 	}
 
-	deleteUserLibraryTable := fmt.Sprintf(`DROP TABLE IF EXISTS lib%v;`, u.Username)
+	deleteUserLibraryTable := fmt.Sprintf(`DROP TABLE IF EXISTS lib%v;`, uname)
 	if _, err := tx.Exec(deleteUserLibraryTable); err != nil {
 		return fmt.Errorf("failed to delete user's library table: %w", err)
 	}
@@ -127,4 +127,27 @@ func GetUserByUsername(uname string) (User, error) {
 	}
 
 	return u, nil
+}
+
+func UpdateUserPassword(uname string, newPass string) error {
+	stmt, err := Database.Prepare(`UPDATE users SET password = ? WHERE username = ?`)
+	if err != nil {
+		return fmt.Errorf("failed to prepare statement: %w", err)
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(newPass, uname)
+	if err != nil {
+		return fmt.Errorf("failed to update password: %w", err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("user not found")
+	}
+
+	return nil
 }
