@@ -225,5 +225,5 @@ func deleteCustomCard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Card updated successfully"})
+	json.NewEncoder(w).Encode(map[string]string{"message": "Card deleted successfully"})
 }
