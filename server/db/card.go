@@ -59,3 +59,21 @@ func GetCard(cID int64) (Card, error) {
 
 	return card, nil
 }
+
+func DeleteCard(cID int64) error {
+	result, err := Database.Exec(`DELETE FROM cards WHERE cardid = ?`, cID)
+	if err != nil {
+		return fmt.Errorf("failed to delete card: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to retrieve affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("card with ID %d not found", cID)
+	}
+
+	return nil
+}

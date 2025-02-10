@@ -23,7 +23,7 @@ func CardHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		getCardDetails(w, r)
 	case http.MethodDelete:
-		fmt.Fprintln(w, "delete") // TODO:
+		deleteCustomCard(w, r)
 	default:
 		fmt.Fprintln(w, "Invalid request method")
 	}
@@ -161,4 +161,69 @@ func getCardDetails(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(card); err != nil {
 		http.Error(w, "Failed to encode card data", http.StatusInternalServerError)
 	}
+}
+
+func deleteCustomCard(w http.ResponseWriter, r *http.Request) {
+	var cID int64
+
+	if err := json.NewDecoder(r.Body).Decode(&cID); err != nil {
+		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+		return
+	}
+
+	authHeader := r.Header.Get("Authorization")
+	if authHeader == "" {
+		http.Error(w, "Missing token", http.StatusUnauthorized)
+		return
+	}
+
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+	if tokenString == authHeader {
+		http.Error(w, "Invalid token format", http.StatusUnauthorized)
+		return
+	}
+
+	claims := &jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+	if err != nil || !token.Valid {
+		http.Error(w, "Invalid token", http.StatusUnauthorized)
+		return
+	}
+
+	if exp, ok := (*claims)["exp"].(float64); ok {
+		if time.Now().Unix() > int64(exp) {
+			http.Error(w, "Token expired", http.StatusUnauthorized)
+			return
+		}
+	} else {
+		http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+		return
+	}
+
+	username, ok := (*claims)["username"].(string)
+	if !ok {
+		http.Error(w, "Invalid token payload", http.StatusUnauthorized)
+		return
+	}
+
+	card, err := db.GetCard(cID)
+	if err != nil {
+		http.Error(w, "Card not found", http.StatusNotFound)
+		return
+	}
+
+	if username != card.CreatedBy {
+		http.Error(w, "Can't edit card that isn't yours", http.StatusForbidden)
+		return
+	}
+
+	if err := db.DeleteCard(cID); err != nil {
+		http.Error(w, "An error occurred while processing your request. Please try again later.", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Card updated successfully"})
 }
