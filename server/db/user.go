@@ -51,10 +51,12 @@ func CreateNewUser(u User) error {
 	}
 
 	createUserLibraryTable := fmt.Sprintf(`
-		CREATE TABLE IF NOT EXISTS lib%d (
+		CREATE TABLE IF NOT EXISTS lib%s (
 			card_id INTEGER PRIMARY KEY NOT NULL,
+			name TEXT NOT NULL,
+			quantity INTEGER NOT NULL,
 			FOREIGN KEY (card_id) REFERENCES cards(id)
-		);`, lastInsertId)
+		);`, u.Username)
 
 	if _, err := tx.Exec(createUserLibraryTable); err != nil {
 		return fmt.Errorf("failed to create library for user %v: %w", lastInsertId, err)
