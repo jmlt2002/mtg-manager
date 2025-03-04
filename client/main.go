@@ -55,7 +55,9 @@ func showMainMenu() {
 		fmt.Println("2. Add card to library")
 		fmt.Println("3. Remove card from library")
 		fmt.Println("4. Create custom card")
-		fmt.Println("5. Logout")
+		fmt.Println("5. Change password")
+		fmt.Println("6. Delete account")
+		fmt.Println("7. Logout")
 		fmt.Print("Select an option: ")
 
 		input, _ := reader.ReadString('\n')
@@ -63,14 +65,24 @@ func showMainMenu() {
 
 		switch input {
 		case "1":
+			api.GetLibraryRequest()
 			fmt.Println("print out all cards in the library")
 		case "2":
+			api.AddCardtoLibRequest()
 			fmt.Println("menu to add card")
 		case "3":
+			api.RemoveCardfromLibRequest()
 			fmt.Println("menu to remove card")
 		case "4":
+			api.CreateCustomcardRequest()
 			fmt.Println("menu to create a custom card")
 		case "5":
+			api.ChangePasswordRequest()
+			fmt.Println("change password")
+		case "6":
+			api.DeleteAccountRequest()
+			fmt.Println("delete account")
+		case "7":
 			fmt.Println("Logging out...")
 			return
 		default:

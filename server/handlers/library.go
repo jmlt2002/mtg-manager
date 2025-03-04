@@ -121,7 +121,7 @@ func showLibrary(w http.ResponseWriter, r *http.Request) {
 
 	lib, err := db.GetLibrary(username)
 	if err != nil {
-		http.Error(w, "Somwthing went wrong while fetching from DB", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong while fetching from DB", http.StatusInternalServerError)
 		return
 	}
 

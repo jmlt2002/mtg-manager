@@ -20,11 +20,11 @@ const BaseURL = "http://localhost:8080"
 func LoginRequest() error {
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Enter username: (leave blank to exit login)")
+	fmt.Print("Enter username: (leave blank to exit login): ")
 	username, _ := reader.ReadString('\n')
 	username = strings.TrimSpace(username)
 
-	fmt.Print("Enter password: (leave blank to exit login)")
+	fmt.Print("Enter password: (leave blank to exit login): ")
 	password, _ := reader.ReadString('\n')
 	password = strings.TrimSpace(password)
 
@@ -49,17 +49,26 @@ func LoginRequest() error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
+	fmt.Printf("Attempting to login\n")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %v", err)
+	}
+	defer resp.Body.Close()
+
 	return nil
 }
 
 func RegisterRequest() error {
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Enter username: (leave blank to exit register)")
+	fmt.Print("Enter username: (leave blank to exit register): ")
 	username, _ := reader.ReadString('\n')
 	username = strings.TrimSpace(username)
 
-	fmt.Print("Enter password: (leave blank to exit register)")
+	fmt.Print("Enter password: (leave blank to exit register): ")
 	password, _ := reader.ReadString('\n')
 	password = strings.TrimSpace(password)
 
@@ -103,5 +112,15 @@ func RegisterRequest() error {
 	}
 
 	fmt.Println("User registered successfully!")
+	return nil
+}
+
+func ChangePasswordRequest() error {
+
+	return nil
+}
+
+func DeleteAccountRequest() error {
+
 	return nil
 }
