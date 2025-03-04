@@ -9,6 +9,8 @@ import (
 	"mtg-manager/client/api"
 )
 
+var token string
+
 func main() {
 	var err error
 
@@ -27,9 +29,9 @@ func main() {
 
 		switch input {
 		case "1":
-			err = api.LoginRequest()
+			token, err = api.LoginRequest()
 		case "2":
-			err = api.RegisterRequest()
+			token, err = api.RegisterRequest()
 		case "3":
 			fmt.Println("Exiting the program.")
 			os.Exit(0)
