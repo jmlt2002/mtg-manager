@@ -29,7 +29,7 @@ func main() {
 		case "1":
 			err = api.LoginRequest()
 		case "2":
-			err = api.LoginRequest()
+			err = api.RegisterRequest()
 		case "3":
 			fmt.Println("Exiting the program.")
 			os.Exit(0)

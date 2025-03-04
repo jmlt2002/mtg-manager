@@ -35,11 +35,17 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if user.Username == "" || user.Password == "" {
+		http.Error(w, "Username and password cannot be empty", http.StatusBadRequest)
+		return
+	}
+
 	if err := db.CreateNewUser(user); err != nil {
 		http.Error(w, "An error occurred while processing your request. Please try again later.", http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
 }
