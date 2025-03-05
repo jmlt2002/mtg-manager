@@ -74,7 +74,7 @@ func AddCardtoLibRequest(token string) error {
 
 	quantity, err := strconv.ParseInt(aux, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid card ID: %w", err)
+		return fmt.Errorf("invalid quantity: %w", err)
 	}
 	card.Quantity = quantity
 
@@ -110,6 +110,59 @@ func AddCardtoLibRequest(token string) error {
 }
 
 func RemoveCardfromLibRequest(token string) error {
+	reader := bufio.NewReader(os.Stdin)
 
+	var card LibCard
+
+	fmt.Print("Insert card ID: ")
+	aux, _ := reader.ReadString('\n')
+	aux = strings.TrimSpace(aux)
+
+	cardID, err := strconv.ParseInt(aux, 10, 64)
+	if err != nil {
+		return fmt.Errorf("invalid card ID: %w", err)
+	}
+	card.CardID = cardID
+
+	fmt.Print("Insert quantity (will subtract from current value): ")
+	aux, _ = reader.ReadString('\n')
+	aux = strings.TrimSpace(aux)
+
+	if aux != "" {
+		quantity, err := strconv.ParseInt(aux, 10, 64)
+		if err != nil {
+			return fmt.Errorf("invalid quantity: %w", err)
+		}
+		card.Quantity = quantity
+	}
+
+	jsonData, err := json.Marshal(card)
+	if err != nil {
+		return fmt.Errorf("failed to encode user data: %v", err)
+	}
+
+	url := fmt.Sprintf("%s/library", BaseURL)
+	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return fmt.Errorf("failed to create request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	fmt.Println("Removing card from your library...")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("operation failed: %s", string(body))
+	}
+
+	fmt.Println("Card added!")
 	return nil
 }

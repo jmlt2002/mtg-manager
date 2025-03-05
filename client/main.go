@@ -50,6 +50,7 @@ func main() {
 
 func showMainMenu() {
 	reader := bufio.NewReader(os.Stdin)
+	var err error
 
 	for {
 		fmt.Println("\n===== Main Menu =====")
@@ -67,28 +68,32 @@ func showMainMenu() {
 
 		switch input {
 		case "1":
-			api.GetLibraryRequest()
+			err = api.GetLibraryRequest(token)
 			fmt.Println("print out all cards in the library")
 		case "2":
-			api.AddCardtoLibRequest(token)
+			err = api.AddCardtoLibRequest(token)
 			fmt.Println("menu to add card")
 		case "3":
-			api.RemoveCardfromLibRequest(token)
+			err = api.RemoveCardfromLibRequest(token)
 			fmt.Println("menu to remove card")
 		case "4":
-			api.CreateCustomCardRequest(token)
+			err = api.CreateCustomCardRequest(token)
 			fmt.Println("menu to create a custom card")
 		case "5":
-			api.ChangePasswordRequest(token)
+			err = api.ChangePasswordRequest(token)
 			fmt.Println("change password")
 		case "6":
-			api.DeleteAccountRequest(token)
+			err = api.DeleteAccountRequest(token)
 			fmt.Println("delete account")
 		case "7":
 			fmt.Println("Logging out...")
 			return
 		default:
 			fmt.Println("Invalid choice, please try again.")
+		}
+
+		if err != nil {
+			fmt.Println(err.Error())
 		}
 	}
 }
