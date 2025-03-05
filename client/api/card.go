@@ -67,7 +67,7 @@ func CreateCustomCardRequest(token string) error {
 		return fmt.Errorf("failed to encode user data: %v", err)
 	}
 
-	url := fmt.Sprintf("%s/login", BaseURL)
+	url := fmt.Sprintf("%s/cards", BaseURL)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Errorf("failed to create request: %v", err)
