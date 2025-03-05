@@ -70,19 +70,19 @@ func showMainMenu() {
 			api.GetLibraryRequest()
 			fmt.Println("print out all cards in the library")
 		case "2":
-			api.AddCardtoLibRequest()
+			api.AddCardtoLibRequest(token)
 			fmt.Println("menu to add card")
 		case "3":
-			api.RemoveCardfromLibRequest()
+			api.RemoveCardfromLibRequest(token)
 			fmt.Println("menu to remove card")
 		case "4":
-			api.CreateCustomcardRequest()
+			api.CreateCustomCardRequest(token)
 			fmt.Println("menu to create a custom card")
 		case "5":
-			api.ChangePasswordRequest()
+			api.ChangePasswordRequest(token)
 			fmt.Println("change password")
 		case "6":
-			api.DeleteAccountRequest()
+			api.DeleteAccountRequest(token)
 			fmt.Println("delete account")
 		case "7":
 			fmt.Println("Logging out...")

@@ -140,9 +140,11 @@ func ChangePasswordRequest(token string) error {
 
 	fmt.Print("Enter old password: (leave blank to exit register): ")
 	old_password, _ := reader.ReadString('\n')
+	old_password = strings.TrimSpace(old_password)
 
 	fmt.Print("Enter new password: (leave blank to exit register): ")
 	new_password, _ := reader.ReadString('\n')
+	new_password = strings.TrimSpace(new_password)
 
 	if old_password == "" || new_password == "" {
 		return fmt.Errorf("password change cancelled")

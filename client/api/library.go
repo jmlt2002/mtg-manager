@@ -5,12 +5,12 @@ func GetLibraryRequest() error {
 	return nil
 }
 
-func AddCardtoLibRequest() error {
+func AddCardtoLibRequest(token string) error {
 
 	return nil
 }
 
-func RemoveCardfromLibRequest() error {
+func RemoveCardfromLibRequest(token string) error {
 
 	return nil
 }

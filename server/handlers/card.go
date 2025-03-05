@@ -35,7 +35,6 @@ func createCustomCard(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
 		return
 	}
-	card.IsCustom = true
 
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
