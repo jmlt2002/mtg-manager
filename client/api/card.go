@@ -73,6 +73,7 @@ func CreateCustomCardRequest(token string) error {
 		return fmt.Errorf("failed to create request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	fmt.Println("Creating card...")
 
