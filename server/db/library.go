@@ -12,9 +12,16 @@ type LibCard struct {
 	Quantity int64  `json:"quantity"`
 }
 
-func AddCardToLib(lc LibCard, username string) error {
-	_, err := Database.Exec(fmt.Sprintf(`INSERT INTO lib%s (card_id, card_name, quantity) VALUES (?, ?, ?)`, username),
-		lc.CardID, lc.Name, lc.Quantity)
+func AddCardToLib(cardID int64, quantity int64, username string) error {
+	var cardName string
+
+	err := Database.QueryRow(`SELECT name FROM cards WHERE card_id = ?`, cardID).Scan(&cardName)
+	if err != nil {
+		return fmt.Errorf("failed to fetch card name: %w", err)
+	}
+
+	_, err = Database.Exec(fmt.Sprintf(`INSERT INTO lib%s (card_id, card_name, quantity) VALUES (?, ?, ?)`, username),
+		cardID, cardName, quantity)
 	if err != nil {
 		return fmt.Errorf("failed to add card to lib: %w", err)
 	}

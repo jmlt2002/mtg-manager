@@ -22,7 +22,7 @@ func main() {
 	r.HandleFunc("/login", handlers.LoginHandler)
 	r.HandleFunc("/users", handlers.UserHandler)
 	r.HandleFunc("/cards", handlers.CardHandler)
-	r.HandleFunc("/library/{uid}", handlers.LibraryHandler)
+	r.HandleFunc("/library", handlers.LibraryHandler)
 	// r.HandleFunc("/products/{key}", ProductHandler)
 	// r.HandleFunc("/articles", ArticlesHandler)
 	http.Handle("/", r)

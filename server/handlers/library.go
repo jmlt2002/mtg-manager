@@ -71,7 +71,7 @@ func addCardToLibrary(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.AddCardToLib(card, username)
+	err = db.AddCardToLib(card.CardID, card.Quantity, username)
 	if err != nil {
 		http.Error(w, "Error while trying to insert into DB", http.StatusInternalServerError)
 		return
